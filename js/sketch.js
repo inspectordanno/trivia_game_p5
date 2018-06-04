@@ -1,6 +1,6 @@
-let yesButton;
-let maybeButton;
-let noButton;
+let aButton;
+let bButton;
+let cButton;
 let resetButton;
 
 
@@ -73,11 +73,14 @@ class Answer extends Trivia {
 
   function setup() {
 
+    //loading google font
+    textFont("PT Sans");
+
     //designing background div
     const backgroundDiv = createDiv();
     backgroundDiv.style('width', windowWidth + 'px')
       .style('height', windowHeight + 'px')
-      .style('background', 'linear-gradient(90deg, rgba(243,243,247,1) 0%, rgba(226,226,226,1) 35%)');
+      .style('background', 'linear-gradient(90deg, rgba(178, 190, 195,1.0) 0%, #00b894 75%)');
 
     //designing canvas
     const cnv = createCanvas(windowWidth / 2, windowHeight / 1.5); //set canvas to window width and window height
@@ -94,7 +97,7 @@ class Answer extends Trivia {
         .style('background-color', color)
         .style('box-shadow', '0 5px 10px rgba(0,0,0,0.19), 0 2px 2px rgba(0,0,0,0.23)')
         .style('border-radius', '3px')
-        .style('border', '1px solid black')
+        // .style('border', '1px solid black')
         .style('color', 'black')
         .style('padding', '1% 1%')
         .style('text-align', 'center')
@@ -104,9 +107,9 @@ class Answer extends Trivia {
         .id(id);
     }
 
-    buttonMaker(yesButton, '#4CAF50', 'Yes', .25, 'yesButton');
-    buttonMaker(maybeButton, '#008CBA', 'Maybe', .45, 'maybeButton');
-    buttonMaker(noButton, '#f44336', 'No', .65, 'noButton');
+    buttonMaker(aButton, '#00cec9', 'Choice A', .25, 'aButton');
+    buttonMaker(bButton, '#74b9ff', 'Choice B', .45, 'bButton');
+    buttonMaker(cButton, '#a29bfe', 'Choice C', .65, 'cButton');
     buttonMaker(resetButton, 'lightgray', 'Reset', .5, 'resetButton');
 
     select('#resetButton').position(.8 * windowWidth, .5 * windowHeight);
@@ -121,6 +124,8 @@ class Answer extends Trivia {
   }
 
   function draw() {
+
+    background('#dfe6e9');
 
     switch (gameState) {
       case 0: //Start Screen
