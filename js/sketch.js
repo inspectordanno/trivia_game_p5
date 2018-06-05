@@ -37,16 +37,17 @@ class Trivia {
 class Question extends Trivia {
   //info is the question text
 
-  constructor(i, x_, y_, s, a) {
+  constructor(i, x_, y_, s) {
     super(i, x_, y_);
     this.score = s;
-    this.answer = a;
 
     if (debug) {
       console.log('question object created');
     }
   }
 }
+
+//the correct answer is the i variable
 
 class Answer extends Trivia {
 
