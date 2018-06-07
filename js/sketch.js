@@ -17,17 +17,21 @@ let jsondata;
 let questions = [];
 let answers = [];
 
-function shuffle (array) { //https://www.frankmitchell.org/2015/01/fisher-yates/
-  var i = 0
-    , j = 0
-    , temp = null;
+function shuffleCustom(array) { //https://www.frankmitchell.org/2015/01/fisher-yates/
+  let i = 0;
+  let j = 0;
+  let temp = null;
+
+  console.log('shuffle started');
 
   for (i = array.length - 1; i > 0; i -= 1) {
     j = Math.floor(Math.random() * (i + 1));
     temp = array[i];
     array[i] = array[j];
     array[j] = temp;
+    console.log(array);
   }
+
 }
 
 function preload() {
@@ -79,11 +83,11 @@ class Answer extends Trivia {
   }
 
   initAns(l) {
-
-    shuffle(answers);
-    this.possibleAnswers = [answers[l].c, answers[Math.floor(Math.random(49))].c, answers[Math.floor(Math.random(49))].c]
+    this.possibleAnswers = [answers[l].c, answers[Math.floor(Math.random() * 49)].c, answers[Math.floor(Math.random() * 49)].c];
     //this.possibleAnswers = this.possibleAnswers.sort();
     console.log(this.possibleAnswers);
+    shuffleCustom(this.possibleAnswers);
+
   }
 
   displayPA() {
@@ -146,12 +150,27 @@ function setup() {
       .style('display', 'inline-block')
       .style('font-size', '16px')
       .id(id);
+
+      buttonVariable.mouseClicked(buttonClicked);
   }
 
   buttonMaker(aButton, themeGreen, 'Choice A', .25, 'aButton');
   buttonMaker(bButton, themeBlue, 'Choice B', .45, 'bButton');
   buttonMaker(cButton, themePurple, 'Choice C', .65, 'cButton');
-  buttonMaker(resetButton, 'lightgray', 'Reset', .5, 'resetButton');
+  buttonMaker(resetButton, 'lightgray', 'Start/Reset', .5, 'resetButton');
+
+  function buttonClicked() {
+    console.log('button clicked');
+    console.log(gameState);
+
+    if (this.id() === 'resetButton') {
+      if (gameState == 0 ) {
+        gameState = 1;
+      } else if (gameState == 1) {
+        gameState = 0;
+      }
+    }
+  }
 
   select('#resetButton').position(.8 * windowWidth, .5 * windowHeight);
 
@@ -166,6 +185,8 @@ function setup() {
 function draw() {
 
   background('#F5F5F5');
+
+
 
   switch (gameState) {
     case 0: //Start Screen
@@ -183,7 +204,7 @@ function draw() {
 function gameStart() {
   textAlign(CENTER);
   textSize(36);
-  text('Press any key to start', width / 2, height / 2);
+  text('Press the start button to begin', width / 2, height / 2);
 }
 
 function gameEnd() {
@@ -216,7 +237,7 @@ function loadData() {
   }
 
   for(var i = 0; i < answers.length; i++){
-    console.log(answers[30]);
+    console.log('hello');
     answers[i].initAns(i);
   }
 
