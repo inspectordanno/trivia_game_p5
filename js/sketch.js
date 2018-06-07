@@ -1,16 +1,38 @@
+const themeGreen = '#00cec9';
+const themeBlue = '#74b9ff';
+const themePurple = '#a29bfe';
+
 let aButton;
 let bButton;
 let cButton;
 let resetButton;
-
 
 let debug = true; //used to turn debug statements on and off
 let gameState = 0; //start and end screen
 let activeQuestion = 0; //used for displaying the questions
 let scoreTotal = 0;
 
+let jsondata;
+
 let questions = [];
 let answers = [];
+
+function shuffle (array) { //https://www.frankmitchell.org/2015/01/fisher-yates/
+  var i = 0
+    , j = 0
+    , temp = null;
+
+  for (i = array.length - 1; i > 0; i -= 1) {
+    j = Math.floor(Math.random() * (i + 1));
+    temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+}
+
+function preload() {
+  jsondata = loadJSON('us_state_capitals.json');
+}
 
 
 class Trivia {
@@ -19,12 +41,11 @@ class Trivia {
     console.log('Trivia object created');
   }
 
-  constructor(i, x_, y_) {
-    this.info = i;
-    this.x = x_;
-    this.y = y_;
-    this.questions = []; //just declare because it will probably be made in loadData
-    this.answers = [];
+  constructor(i, x_, y_, c) {
+    this.info = i; //question text
+    this.x = x_; //x position
+    this.y = y_; //y position
+    this.c = c; //capital (answer)
   }
 
   display() {
@@ -37,8 +58,8 @@ class Trivia {
 class Question extends Trivia {
   //info is the question text
 
-  constructor(i, x_, y_, s) {
-    super(i, x_, y_);
+  constructor(i, x_, y_, c, s) {
+    super(i, x_, y_, c);
     this.score = s;
 
     if (debug) {
@@ -47,20 +68,33 @@ class Question extends Trivia {
   }
 }
 
-//the correct answer is the i variable
+//For the answers, I want to create an array of three possible answers. One will be the
+// correct answer, and two will be two random incorrect answers. Then, I want to randomize the
+// order of them, and lastly, display them on the canvas.
 
 class Answer extends Trivia {
 
-  constructor(i, x_, y_, pA) {
-    super(i, x_, y_);
-    this.possibleAnswers = pA;
+  constructor(i, x_, y_, c) {
+    super(i, x_, y_, c);
+  }
+
+  initAns(l) {
+
+    shuffle(answers);
+    this.possibleAnswers = [answers[l].c, answers[Math.floor(Math.random(49))].c, answers[Math.floor(Math.random(49))].c]
+    //this.possibleAnswers = this.possibleAnswers.sort();
+    console.log(this.possibleAnswers);
   }
 
   displayPA() {
-    for (let i = 0; i < this.possibleAnswers.length; i++) {
-      textAlign(CENTER);
-      text(i + ": " + this.possibleAnswers[i], width / 2, height / 2 + 50 * (i + 1));
-    }
+    push();
+    fill(themeGreen);
+    text(`A:  ${this.possibleAnswers[0]}`, width/2, height * .5);
+    fill(themeBlue);
+    text(`B:  ${this.possibleAnswers[1]}`, width/2, height * .65);
+    fill(themePurple);
+    text(`C:  ${this.possibleAnswers[2]}`, width/2, height * .8);
+    pop();
   }
 
   updateScore() {
@@ -68,12 +102,13 @@ class Answer extends Trivia {
   }
 
   checkAnswer(a) {
-    if (this.possibleAnswers[a] == this.info) {
+    if (this.possibleAnswers[a] == this.c) {
       console.log('correct');
       this.updateScore();
     } else {
       console.log('incorrect');
     }
+    activeQuestion += 1;
   }
 }
 
@@ -113,13 +148,12 @@ function setup() {
       .id(id);
   }
 
-  buttonMaker(aButton, '#00cec9', 'Choice A', .25, 'aButton');
-  buttonMaker(bButton, '#74b9ff', 'Choice B', .45, 'bButton');
-  buttonMaker(cButton, '#a29bfe', 'Choice C', .65, 'cButton');
+  buttonMaker(aButton, themeGreen, 'Choice A', .25, 'aButton');
+  buttonMaker(bButton, themeBlue, 'Choice B', .45, 'bButton');
+  buttonMaker(cButton, themePurple, 'Choice C', .65, 'cButton');
   buttonMaker(resetButton, 'lightgray', 'Reset', .5, 'resetButton');
 
   select('#resetButton').position(.8 * windowWidth, .5 * windowHeight);
-
 
   loadData();
 
@@ -131,7 +165,7 @@ function setup() {
 
 function draw() {
 
-  background('#dfe6e9');
+  background('#F5F5F5');
 
   switch (gameState) {
     case 0: //Start Screen
@@ -157,7 +191,7 @@ function gameEnd() {
 }
 
 function playGame() {
-  //todo: display the question
+  //display the question
   questions[activeQuestion].display();
   //display answers
   answers[activeQuestion].displayPA();
@@ -165,24 +199,26 @@ function playGame() {
   textAlign(CENTER);
   text(`Score: ${scoreTotal}`, width - 100, 50);
 
-  //maybe have interactivity (how the user gives the answer)
 }
 
 function loadData() {
-  //to do: load data xml or json
 
-  let q = new Question('Yes, no, or maybe?', width / 2, height / 2, 10, 1);
+  console.log(jsondata);
 
-  questions[0] = q;
+  for (let item of Object.keys(jsondata)) {
+    let q = new Question(`What is the capital of ${jsondata[item].name}?`, width/2, height * .3, `${jsondata[item].capital}`, 1)
+    questions.push(q);
+  }
 
-  let ans = [
-    'Yes',
-    'No',
-    'Maybe'
-  ];
-  a = new Answer('No', width / 2, height / 2 + 100, ans)
+  for (let item of Object.keys(jsondata)) {
+    let a = new Answer('No', width / 2, height / 2 + 100, `${jsondata[item].capital}`, )
+    answers.push(a);
+  }
 
-  answers[0] = a;
+  for(var i = 0; i < answers.length; i++){
+    console.log(answers[30]);
+    answers[i].initAns(i);
+  }
 
   if (debug) {
     console.log('data loaded');
