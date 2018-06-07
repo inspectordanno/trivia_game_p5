@@ -101,20 +101,20 @@ class Answer extends Trivia {
     pop();
   }
 
-//   updateScore() {
-//     scoreTotal += questions[activeQuestion].score;
-//   }
-//
-//   checkAnswer(a) {
-//     if (this.possibleAnswers[a] == this.c) {
-//       console.log('correct');
-//       this.updateScore();
-//     } else {
-//       console.log('incorrect');
-//     }
-//     activeQuestion += 1;
-//   }
-// }
+  // updateScore() {
+  //   scoreTotal += questions[activeQuestion].score;
+  // }
+  //
+  // checkAnswer(a) {
+  //   if (this.possibleAnswers[a] == this.c) {
+  //     console.log('correct');
+  //     this.updateScore();
+  //   } else {
+  //     console.log('incorrect');
+  //   }
+  //   activeQuestion += 1;
+  // }
+}
 
 function setup() {
 
@@ -172,7 +172,7 @@ function setup() {
       let currentAnswer = answers[activeQuestion];
       let indexofCorrectAnswer;
       currentAnswer.possibleAnswers.forEach(function(e, index){
-        if e === currentAnswer.c {
+        if (e === currentAnswer.c) {
           indexofCorrectAnswer = index;
         }
       });
