@@ -101,20 +101,20 @@ class Answer extends Trivia {
     pop();
   }
 
-  updateScore() {
-    scoreTotal += questions[activeQuestion].score;
-  }
-
-  checkAnswer(a) {
-    if (this.possibleAnswers[a] == this.c) {
-      console.log('correct');
-      this.updateScore();
-    } else {
-      console.log('incorrect');
-    }
-    activeQuestion += 1;
-  }
-}
+//   updateScore() {
+//     scoreTotal += questions[activeQuestion].score;
+//   }
+//
+//   checkAnswer(a) {
+//     if (this.possibleAnswers[a] == this.c) {
+//       console.log('correct');
+//       this.updateScore();
+//     } else {
+//       console.log('incorrect');
+//     }
+//     activeQuestion += 1;
+//   }
+// }
 
 function setup() {
 
@@ -136,8 +136,8 @@ function setup() {
 
   //designing buttons
 
-  function buttonMaker(buttonVariable, color, string, x, id) {
-    buttonVariable = createButton(string)
+  function buttonMaker(buttonVariable, color, string, x, id, value) {
+    buttonVariable = createButton(string, value)
       .position(windowWidth * x, windowHeight * .1)
       .style('background-color', color)
       .style('box-shadow', '0 5px 10px rgba(0,0,0,0.19), 0 2px 2px rgba(0,0,0,0.23)')
@@ -154,21 +154,33 @@ function setup() {
       buttonVariable.mouseClicked(buttonClicked);
   }
 
-  buttonMaker(aButton, themeGreen, 'Choice A', .25, 'aButton');
-  buttonMaker(bButton, themeBlue, 'Choice B', .45, 'bButton');
-  buttonMaker(cButton, themePurple, 'Choice C', .65, 'cButton');
-  buttonMaker(resetButton, 'lightgray', 'Start/Reset', .5, 'resetButton');
+  buttonMaker(aButton, themeGreen, 'Choice A', .25, 'aButton', 0);
+  buttonMaker(bButton, themeBlue, 'Choice B', .45, 'bButton', 1);
+  buttonMaker(cButton, themePurple, 'Choice C', .65, 'cButton', 2);
+  buttonMaker(resetButton, 'lightgray', 'Start/Reset', .5, 'resetButton', null);
 
   function buttonClicked() {
-    console.log('button clicked');
-    console.log(gameState);
+    console.log(this.id());
 
-    if (this.id() === 'resetButton') {
+    if (this.id() === 'resetButton') { //this does the reset button
       if (gameState == 0 ) {
         gameState = 1;
       } else if (gameState == 1) {
         gameState = 0;
       }
+    } else { //this does all the other buttons
+      let currentAnswer = answers[activeQuestion];
+      let indexofCorrectAnswer;
+      currentAnswer.possibleAnswers.forEach(function(e, index){
+        if e === currentAnswer.c {
+          indexofCorrectAnswer = index;
+        }
+      });
+        if (this.value() == indexofCorrectAnswer) {
+          console.log('this is the correct answer');
+          scoreTotal++;
+        }
+        activeQuestion++;
     }
   }
 
@@ -243,17 +255,5 @@ function loadData() {
 
   if (debug) {
     console.log('data loaded');
-  }
-
-}
-
-function keyTyped() {
-  if (gameState == 0) {
-    gameState = 1;
-    if (debug) {
-      console.log('game starting');
-    }
-  } else {
-    answers[activeQuestion].checkAnswer(key);
   }
 }
