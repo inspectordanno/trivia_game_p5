@@ -34,6 +34,9 @@ function shuffleCustom(array) { //https://www.frankmitchell.org/2015/01/fisher-y
 
 }
 
+let started = false;
+
+
 function preload() {
   jsondata = loadJSON('us_state_capitals.json');
 }
@@ -160,6 +163,11 @@ function setup() {
   buttonMaker(resetButton, 'lightgray', 'Start/Reset', .5, 'resetButton', null);
 
   function buttonClicked() {
+    console.log(gameState);
+    if (activeQuestion > 48) {
+      gameState = 2;
+      return false;
+    }
     console.log(this.id());
 
     if (this.id() === 'resetButton') { //this does the reset button
@@ -167,6 +175,8 @@ function setup() {
         gameState = 1;
       } else if (gameState == 1) {
         gameState = 0;
+        scoreTotal = 0;
+        activeQuestion = 0;
       }
     } else { //this does all the other buttons
       let currentAnswer = answers[activeQuestion];
@@ -220,7 +230,7 @@ function gameStart() {
 }
 
 function gameEnd() {
-
+  text('Thanks for playing!', width/2, height/2);
 }
 
 function playGame() {
@@ -230,7 +240,7 @@ function playGame() {
   answers[activeQuestion].displayPA();
   //display the score
   textAlign(CENTER);
-  text(`Score: ${scoreTotal}`, width - 100, 50);
+  text(`Score: ${scoreTotal} / ${activeQuestion}`, width - 100, 50);
 
 }
 
