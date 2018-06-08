@@ -99,7 +99,6 @@ class Answer extends Trivia {
     shuffleCustom(this.possibleAnswers); //shuffles
     //There is still a 1/50 chance for each incorrect answer that a duplicate of the correct answer will be displayed.
     //I have to figure out how to fix this.
-
   }
 
   displayPA() { //displaying the answers
