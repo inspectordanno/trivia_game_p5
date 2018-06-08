@@ -97,6 +97,8 @@ class Answer extends Trivia {
     this.possibleAnswers = [answers[l].c, answers[Math.floor(Math.random() * 49)].c, answers[Math.floor(Math.random() * 49)].c];
     console.log(this.possibleAnswers);
     shuffleCustom(this.possibleAnswers); //shuffles
+    //There is still a 1/50 chance for each incorrect answer that a duplicate of the correct answer will be displayed.
+    //I have to figure out how to fix this.
 
   }
 
@@ -253,13 +255,17 @@ function draw() {
 function gameStart() {
   textAlign(CENTER);
   textSize(width/15); //this makes text size responsive based on canvas width
-  text('Press the start button to begin', width / 2, height / 2);
+  text('State Capitals', width / 2, height / 2);
   textSize(width/30);
-  text('This also has sound.', width/2, height/1.5);
+  text('Press start to begin. This also has sound.', width/2, height/1.5);
 }
 
 function gameEnd() {
+  textAlign(CENTER);
+  textSize(width/15)
   text('Thanks for playing!', width/2, height/2);
+  textSize(width/30);
+  text(`You scored: ${scoreTotal + 1} / ${activeQuestion + 1}`, width/2, height/1.5)
 }
 
 function playGame() {
@@ -310,6 +316,6 @@ function smiley(color, radianX, radianY) { //this smiley shape is from http://al
   fill(0);
   ellipse(30, 40, 10, 10);
   ellipse(70, 40, 10, 10);
-  arc(50, 60, 40, 30, radians(radianX), radians(radianY));
+  arc(50, 60, 40, 30, radians(radianX), radians(radianY)); //changes happy or sad face
   pop();
 }
