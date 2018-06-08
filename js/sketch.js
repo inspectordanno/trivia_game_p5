@@ -2,23 +2,23 @@ const themeGreen = '#00cec9';
 const themeBlue = '#74b9ff';
 const themePurple = '#a29bfe';
 
-let aButton;
+let aButton; //these are the multiple choice buttons
 let bButton;
 let cButton;
-let resetButton;
+let resetButton; //this is the start/reset button
 
 let debug = true; //used to turn debug statements on and off
 let gameState = 0; //start and end screen
 let activeQuestion = 0; //used for displaying the questions
-let scoreTotal = 0;
+let scoreTotal = 0; //calculating the cumulative score
 
-let jsondata;
+let jsondata; //variable that will hold the json
 
-let questions = [];
-let answers = [];
+let questions = []; //array of questions
+let answers = []; //array of questions
 
 function shuffleCustom(array) { //https://www.frankmitchell.org/2015/01/fisher-yates/
-  let i = 0;
+  let i = 0;                    //this shuffles the array
   let j = 0;
   let temp = null;
 
@@ -31,18 +31,14 @@ function shuffleCustom(array) { //https://www.frankmitchell.org/2015/01/fisher-y
     array[j] = temp;
     console.log(array);
   }
-
 }
-
-let started = false;
-
 
 function preload() {
-  jsondata = loadJSON('us_state_capitals.json');
+  jsondata = loadJSON('us_state_capitals.json'); //this preloads the json so I don't run into synchronicity issues
 }
 
 
-class Trivia {
+class Trivia { //base class for displaying question and answer
 
   if (debug) {
     console.log('Trivia object created');
@@ -56,8 +52,11 @@ class Trivia {
   }
 
   display() {
+    push(); //this makes text size responsive based on canvas width
+    textSize(width/30);
     textAlign(CENTER);
     text(this.info, this.x, this.y);
+    pop();
   }
 }
 
@@ -85,16 +84,16 @@ class Answer extends Trivia {
     super(i, x_, y_, c);
   }
 
-  initAns(l) {
+  initAns(l) { //possible answers consist of the correct answer from current answer and two incorrect answers
     this.possibleAnswers = [answers[l].c, answers[Math.floor(Math.random() * 49)].c, answers[Math.floor(Math.random() * 49)].c];
-    //this.possibleAnswers = this.possibleAnswers.sort();
     console.log(this.possibleAnswers);
-    shuffleCustom(this.possibleAnswers);
+    shuffleCustom(this.possibleAnswers); //shuffles
 
   }
 
-  displayPA() {
+  displayPA() { //displaying the answers
     push();
+    textSize(width/20) //this makes text size responsive based on canvas width
     fill(themeGreen);
     text(`A:  ${this.possibleAnswers[0]}`, width/2, height * .5);
     fill(themeBlue);
@@ -104,19 +103,6 @@ class Answer extends Trivia {
     pop();
   }
 
-  // updateScore() {
-  //   scoreTotal += questions[activeQuestion].score;
-  // }
-  //
-  // checkAnswer(a) {
-  //   if (this.possibleAnswers[a] == this.c) {
-  //     console.log('correct');
-  //     this.updateScore();
-  //   } else {
-  //     console.log('incorrect');
-  //   }
-  //   activeQuestion += 1;
-  // }
 }
 
 function setup() {
@@ -164,39 +150,51 @@ function setup() {
 
   function buttonClicked() {
     console.log(gameState);
-    if (activeQuestion > 48) {
+    if (activeQuestion > 48) { //if activeQuestion is above 48, change the gameState to gameEnd()
       gameState = 2;
-      return false;
-    }
-    console.log(this.id());
-
-    if (this.id() === 'resetButton') { //this does the reset button
-      if (gameState == 0 ) {
-        gameState = 1;
-      } else if (gameState == 1) {
+      if (this.id() === 'resetButton') { //if activeQuestion is above 48 AND resetButton is pressed, restart the game and set everything to 0
         gameState = 0;
         scoreTotal = 0;
         activeQuestion = 0;
       }
-    } else { //this does all the other buttons
-      let currentAnswer = answers[activeQuestion];
-      let indexofCorrectAnswer;
-      currentAnswer.possibleAnswers.forEach(function(e, index){
-        if (e === currentAnswer.c) {
-          indexofCorrectAnswer = index;
-        }
-      });
-        if (this.value() == indexofCorrectAnswer) {
-          console.log('this is the correct answer');
-          scoreTotal++;
-        }
-        activeQuestion++;
-    }
-  }
+    } else { //if activeQuestion is below 48, do this
+        if (this.id() === 'resetButton') { //if reset button is pressed
+          if (gameState == 0 ) { //if gamestate is 0, change it to 1 (start the game)
+            gameState = 1;
+          } else { //if gamestate is 1, change everything to 0 and go back to start screen
+            gameState = 0;
+            scoreTotal = 0;
+            activeQuestion = 0;
+          } //end reset button directions
+        } else { //if any other button is pressed (top buttons)
+            if (gameState == 0) { // if the game state is 0 (start screen), hitting the top buttons does nothing
+              return false;
+              //gameState 0 end
+            } else if (gameState == 1) { //if the game state is 1 (play game), the buttons work
+                let currentAnswer = answers[activeQuestion];
+                let indexofCorrectAnswer;
+                currentAnswer.possibleAnswers.forEach(function(e, index){
+                  if (e === currentAnswer.c) { //set the index of the correct answer into the array to a variable named index
+                    indexofCorrectAnswer = index;
+                  }
+                });
+            if (this.value() == indexofCorrectAnswer) { //when the button whose value is equal to the index value is pressed, increase the score
+              console.log('this is the correct answer');
+              scoreTotal++;
+            }
+            activeQuestion++; //increase the question no matter if the user gets it right or wrong
+            } else if (gameState == 2) { //if the game state is 2 (end screen), hitting the top buttons does nothing
+              return false;
+              }
+            } //all other buttons directions end
+          } //activequestion below 48 end
+        } //buttonClicked() end
+
+        //Believe me, I tried to simplify this logic, but this was the only way I could get it to work.
 
   select('#resetButton').position(.8 * windowWidth, .5 * windowHeight);
 
-  loadData();
+  loadData(); //running loadData
 
   if (debug) {
     console.log("end of setup");
@@ -225,7 +223,7 @@ function draw() {
 
 function gameStart() {
   textAlign(CENTER);
-  textSize(36);
+  textSize(width/15); //this makes text size responsive based on canvas width
   text('Press the start button to begin', width / 2, height / 2);
 }
 
@@ -235,30 +233,31 @@ function gameEnd() {
 
 function playGame() {
   //display the question
-  questions[activeQuestion].display();
-  //display answers
-  answers[activeQuestion].displayPA();
+  questions[activeQuestion].display(); //display the current question
+  //display answers                    //index values of questions and answers are the same (U.S. states are in alphabetical order)
+  answers[activeQuestion].displayPA(); //display the current possible answers
   //display the score
-  textAlign(CENTER);
-  text(`Score: ${scoreTotal} / ${activeQuestion}`, width - 100, 50);
-
+  push();
+  textSize(width/50); //this makes text size responsive based on canvas width
+  text(`Questions Correct: ${scoreTotal} / ${activeQuestion}`, width - 100, 50); //displays the total amoutn correct (score) over total questions
+  pop();
 }
 
 function loadData() {
 
   console.log(jsondata);
 
-  for (let item of Object.keys(jsondata)) {
+  for (let item of Object.keys(jsondata)) { //this forms 50 questions out of each state in the json object and pushes those questions to an array
     let q = new Question(`What is the capital of ${jsondata[item].name}?`, width/2, height * .3, `${jsondata[item].capital}`, 1)
     questions.push(q);
   }
 
-  for (let item of Object.keys(jsondata)) {
+  for (let item of Object.keys(jsondata)) { //forms 50 answers and pushes them to an array
     let a = new Answer('No', width / 2, height / 2 + 100, `${jsondata[item].capital}`, )
     answers.push(a);
   }
 
-  for(var i = 0; i < answers.length; i++){
+  for(var i = 0; i < answers.length; i++){ //for all 50 answers, initialize the possible answers
     console.log('hello');
     answers[i].initAns(i);
   }
