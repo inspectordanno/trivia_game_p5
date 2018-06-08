@@ -1,6 +1,8 @@
 const themeGreen = '#00cec9';
 const themeBlue = '#74b9ff';
 const themePurple = '#a29bfe';
+const smileyGreen = [0, 184, 148];
+const smileyRed = [184, 0, 36];
 
 let aButton; //these are the multiple choice buttons
 let bButton;
@@ -19,6 +21,8 @@ let answers = []; //array of questions
 
 let correctSound; //sounds made when question is answered right or wrong
 let incorrectSound;
+
+let smile = null; //this determines if smiley will be displayed or not
 
 function shuffleCustom(array) { //https://www.frankmitchell.org/2015/01/fisher-yates/
   let i = 0;                    //this shuffles the array
@@ -157,6 +161,7 @@ function setup() {
   buttonMaker(cButton, themePurple, 'Choice C', .65, 'cButton', 2);
   buttonMaker(resetButton, 'lightgray', 'Start/Reset', .5, 'resetButton', null);
 
+  //Thus starts the ugliest if/else statement in all the land.
   function buttonClicked() {
     console.log(gameState);
     if (activeQuestion > 48) { //if activeQuestion is above 48, change the gameState to gameEnd()
@@ -191,8 +196,10 @@ function setup() {
               console.log('this is the correct answer');
               scoreTotal++;
               correctSound.play(); //play correct sound
+              smile = true;
             } else if (this.value() !== indexofCorrectAnswer) {
                 incorrectSound.play(); //play incorrect sound
+                smile = false;
             }
             activeQuestion++; //increase the question no matter if the user gets it right or wrong
             //game state 1 end
@@ -219,17 +226,26 @@ function draw() {
 
   background('#F5F5F5');
 
+  if (smile === true) {
+    smiley(smileyGreen, 0, 180);
+  } else if (smile === false) {
+    smiley(smileyRed, 180, 0);
+  }
+
+
 
 
   switch (gameState) {
     case 0: //Start Screen
       gameStart();
+      smile = null; //don't display smile on start screen
       break;
     case 1: //Trivia Gameplay
       playGame();
       break;
     case 2: //end Screen
       gameEnd();
+      smile = null; //don't display smile on end screen
       break;
   }
 }
@@ -280,4 +296,20 @@ function loadData() {
   if (debug) {
     console.log('data loaded');
   }
+}
+
+function smiley(color, radianX, radianY) { //this smiley shape is from http://alpha.editor.p5js.org/daniwhkim/sketches/HyJ2wNOp
+  push();
+  translate(10, 10);
+  scale(width/720); //scales based on width
+  noStroke();
+  // smiley face
+  fill(color);
+  ellipse(50, 50, 100, 100);
+  //smiley eyes & mouth
+  fill(0);
+  ellipse(30, 40, 10, 10);
+  ellipse(70, 40, 10, 10);
+  arc(50, 60, 40, 30, radians(radianX), radians(radianY));
+  pop();
 }
