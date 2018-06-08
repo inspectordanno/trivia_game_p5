@@ -17,6 +17,9 @@ let jsondata; //variable that will hold the json
 let questions = []; //array of questions
 let answers = []; //array of questions
 
+let correctSound; //sounds made when question is answered right or wrong
+let incorrectSound;
+
 function shuffleCustom(array) { //https://www.frankmitchell.org/2015/01/fisher-yates/
   let i = 0;                    //this shuffles the array
   let j = 0;
@@ -35,6 +38,8 @@ function shuffleCustom(array) { //https://www.frankmitchell.org/2015/01/fisher-y
 
 function preload() {
   jsondata = loadJSON('us_state_capitals.json'); //this preloads the json so I don't run into synchronicity issues
+  correctSound = loadSound('correct.mp3');
+  incorrectSound = loadSound('incorrect.mp3');
 }
 
 
@@ -110,6 +115,10 @@ function setup() {
   //loading google font
   textFont("PT Sans");
 
+  //setting volume of sound
+   correctSound.setVolume(0.1);
+   incorrectSound.setVolume(0.1);
+
   //designing background div
   const backgroundDiv = createDiv();
   backgroundDiv.style('width', windowWidth + 'px')
@@ -181,11 +190,15 @@ function setup() {
             if (this.value() == indexofCorrectAnswer) { //when the button whose value is equal to the index value is pressed, increase the score
               console.log('this is the correct answer');
               scoreTotal++;
+              correctSound.play(); //play correct sound
+            } else if (this.value() !== indexofCorrectAnswer) {
+                incorrectSound.play(); //play incorrect sound
             }
             activeQuestion++; //increase the question no matter if the user gets it right or wrong
+            //game state 1 end
             } else if (gameState == 2) { //if the game state is 2 (end screen), hitting the top buttons does nothing
               return false;
-              }
+            } //game state 2 end
             } //all other buttons directions end
           } //activequestion below 48 end
         } //buttonClicked() end
@@ -225,6 +238,8 @@ function gameStart() {
   textAlign(CENTER);
   textSize(width/15); //this makes text size responsive based on canvas width
   text('Press the start button to begin', width / 2, height / 2);
+  textSize(width/30);
+  text('This also has sound.', width/2, height/1.5);
 }
 
 function gameEnd() {
@@ -238,8 +253,8 @@ function playGame() {
   answers[activeQuestion].displayPA(); //display the current possible answers
   //display the score
   push();
-  textSize(width/50); //this makes text size responsive based on canvas width
-  text(`Questions Correct: ${scoreTotal} / ${activeQuestion}`, width - 100, 50); //displays the total amoutn correct (score) over total questions
+  textSize(width/40); //this makes text size responsive based on canvas width
+  text(`Questions Correct: ${scoreTotal} / ${activeQuestion}`, width - 110, 50); //displays the total amoutn correct (score) over total questions
   pop();
 }
 
