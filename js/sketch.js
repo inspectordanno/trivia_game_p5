@@ -93,13 +93,39 @@ class Answer extends Trivia {
     super(i, x_, y_, c);
   }
 
+  returnAnswerTwo(l) {
+    let ans = Math.floor(Math.random() * 49);
+    if(ans == l){
+      return this.returnAnswerTwo(l);
+    }
+    else{
+      console.log(ans);
+      return ans;
+    }
+  }
+
+  returnAnswerThree(l, ans2) {
+    let ans = Math.floor(Math.random() * 49);
+    if(ans == l || ans == ans2){
+      return this.returnAnswerThree(l, ans2);
+    }
+    else{
+      console.log(ans);
+      return ans;
+    }
+  }
+
   initAns(l) { //possible answers consist of the correct answer from current answer and two incorrect answers
-    this.possibleAnswers = [answers[l].c, answers[Math.floor(Math.random() * 49)].c, answers[Math.floor(Math.random() * 49)].c];
+    let ans2 = this.returnAnswerTwo(l);
+    console.log(ans2);
+    let ans3 = this.returnAnswerThree(l, ans2);
+    this.possibleAnswers = [answers[l].c, answers[ans2].c, answers[ans3].c];
     console.log(this.possibleAnswers);
     shuffleCustom(this.possibleAnswers); //shuffles
     //There is still a 1/50 chance for each incorrect answer that a duplicate of the correct answer will be displayed.
     //I have to figure out how to fix this.
   }
+
 
   displayPA() { //displaying the answers
     push();
