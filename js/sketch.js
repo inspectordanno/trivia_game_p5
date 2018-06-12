@@ -93,7 +93,7 @@ class Answer extends Trivia {
     super(i, x_, y_, c);
   }
 
-  returnAnswerTwo(l) {
+  returnAnswerTwo(l) { //These returnAnswer functions prevent the 2nd and 3rd answers from being duplicates or the correct answer
     let ans = Math.floor(Math.random() * 49);
     if (ans == l) {
       return this.returnAnswerTwo(l);
@@ -120,8 +120,6 @@ class Answer extends Trivia {
     this.possibleAnswers = [answers[l].c, answers[ans2].c, answers[ans3].c];
     console.log(this.possibleAnswers);
     shuffleCustom(this.possibleAnswers); //shuffles
-    //There is still a 1/50 chance for each incorrect answer that a duplicate of the correct answer will be displayed.
-    //I have to figure out how to fix this.
   }
 
 
