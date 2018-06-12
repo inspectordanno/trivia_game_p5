@@ -25,7 +25,7 @@ let incorrectSound;
 let smile = null; //this determines if smiley will be displayed or not
 
 function shuffleCustom(array) { //https://www.frankmitchell.org/2015/01/fisher-yates/
-  let i = 0;                    //this shuffles the array
+  let i = 0; //this shuffles the array
   let j = 0;
   let temp = null;
 
@@ -62,7 +62,7 @@ class Trivia { //base class for displaying question and answer
 
   display() {
     push(); //this makes text size responsive based on canvas width
-    textSize(width/30);
+    textSize(width / 30);
     textAlign(CENTER);
     text(this.info, this.x, this.y);
     pop();
@@ -95,10 +95,9 @@ class Answer extends Trivia {
 
   returnAnswerTwo(l) {
     let ans = Math.floor(Math.random() * 49);
-    if(ans == l){
+    if (ans == l) {
       return this.returnAnswerTwo(l);
-    }
-    else{
+    } else {
       console.log(ans);
       return ans;
     }
@@ -106,10 +105,9 @@ class Answer extends Trivia {
 
   returnAnswerThree(l, ans2) {
     let ans = Math.floor(Math.random() * 49);
-    if(ans == l || ans == ans2){
+    if (ans == l || ans == ans2) {
       return this.returnAnswerThree(l, ans2);
-    }
-    else{
+    } else {
       console.log(ans);
       return ans;
     }
@@ -129,13 +127,13 @@ class Answer extends Trivia {
 
   displayPA() { //displaying the answers
     push();
-    textSize(width/20) //this makes text size responsive based on canvas width
+    textSize(width / 20) //this makes text size responsive based on canvas width
     fill(themeGreen);
-    text(`A:  ${this.possibleAnswers[0]}`, width/2, height * .5);
+    text(`A:  ${this.possibleAnswers[0]}`, width / 2, height * .5);
     fill(themeBlue);
-    text(`B:  ${this.possibleAnswers[1]}`, width/2, height * .65);
+    text(`B:  ${this.possibleAnswers[1]}`, width / 2, height * .65);
     fill(themePurple);
-    text(`C:  ${this.possibleAnswers[2]}`, width/2, height * .8);
+    text(`C:  ${this.possibleAnswers[2]}`, width / 2, height * .8);
     pop();
   }
 
@@ -147,8 +145,8 @@ function setup() {
   textFont("PT Sans");
 
   //setting volume of sound
-   correctSound.setVolume(0.1);
-   incorrectSound.setVolume(0.1);
+  correctSound.setVolume(0.1);
+  incorrectSound.setVolume(0.1);
 
   //designing background div
   const backgroundDiv = createDiv();
@@ -180,7 +178,7 @@ function setup() {
       .style('font-size', '16px')
       .id(id);
 
-      buttonVariable.mouseClicked(buttonClicked);
+    buttonVariable.mouseClicked(buttonClicked);
   }
 
   buttonMaker(aButton, themeGreen, 'Choice A', .25, 'aButton', 0);
@@ -199,45 +197,45 @@ function setup() {
         activeQuestion = 0;
       }
     } else { //if activeQuestion is below 48, do this
-        if (this.id() === 'resetButton') { //if reset button is pressed
-          if (gameState == 0 ) { //if gamestate is 0, change it to 1 (start the game)
-            gameState = 1;
-          } else { //if gamestate is 1, change everything to 0 and go back to start screen
-            gameState = 0;
-            scoreTotal = 0;
-            activeQuestion = 0;
-          } //end reset button directions
-        } else { //if any other button is pressed (top buttons)
-            if (gameState == 0) { // if the game state is 0 (start screen), hitting the top buttons does nothing
-              return false;
-              //gameState 0 end
-            } else if (gameState == 1) { //if the game state is 1 (play game), the buttons work
-                let currentAnswer = answers[activeQuestion];
-                let indexofCorrectAnswer;
-                currentAnswer.possibleAnswers.forEach(function(e, index){
-                  if (e === currentAnswer.c) { //set the index of the correct answer into the array to a variable named index
-                    indexofCorrectAnswer = index;
-                  }
-                });
-            if (this.value() == indexofCorrectAnswer) { //when the button whose value is equal to the index value is pressed, increase the score
-              console.log('this is the correct answer');
-              scoreTotal++;
-              correctSound.play(); //play correct sound
-              smile = true;
-            } else if (this.value() !== indexofCorrectAnswer) {
-                incorrectSound.play(); //play incorrect sound
-                smile = false;
+      if (this.id() === 'resetButton') { //if reset button is pressed
+        if (gameState == 0) { //if gamestate is 0, change it to 1 (start the game)
+          gameState = 1;
+        } else { //if gamestate is 1, change everything to 0 and go back to start screen
+          gameState = 0;
+          scoreTotal = 0;
+          activeQuestion = 0;
+        } //end reset button directions
+      } else { //if any other button is pressed (top buttons)
+        if (gameState == 0) { // if the game state is 0 (start screen), hitting the top buttons does nothing
+          return false;
+          //gameState 0 end
+        } else if (gameState == 1) { //if the game state is 1 (play game), the buttons work
+          let currentAnswer = answers[activeQuestion];
+          let indexofCorrectAnswer;
+          currentAnswer.possibleAnswers.forEach(function(e, index) {
+            if (e === currentAnswer.c) { //set the index of the correct answer into the array to a variable named index
+              indexofCorrectAnswer = index;
             }
-            activeQuestion++; //increase the question no matter if the user gets it right or wrong
-            //game state 1 end
-            } else if (gameState == 2) { //if the game state is 2 (end screen), hitting the top buttons does nothing
-              return false;
-            } //game state 2 end
-            } //all other buttons directions end
-          } //activequestion below 48 end
-        } //buttonClicked() end
+          });
+          if (this.value() == indexofCorrectAnswer) { //when the button whose value is equal to the index value is pressed, increase the score
+            console.log('this is the correct answer');
+            scoreTotal++;
+            correctSound.play(); //play correct sound
+            smile = true;
+          } else if (this.value() !== indexofCorrectAnswer) {
+            incorrectSound.play(); //play incorrect sound
+            smile = false;
+          }
+          activeQuestion++; //increase the question no matter if the user gets it right or wrong
+          //game state 1 end
+        } else if (gameState == 2) { //if the game state is 2 (end screen), hitting the top buttons does nothing
+          return false;
+        } //game state 2 end
+      } //all other buttons directions end
+    } //activequestion below 48 end
+  } //buttonClicked() end
 
-        //Believe me, I tried to simplify this logic, but this was the only way I could get it to work.
+  //Believe me, I tried to simplify this logic, but this was the only way I could get it to work.
 
   select('#resetButton').position(.8 * windowWidth, .5 * windowHeight);
 
@@ -279,18 +277,18 @@ function draw() {
 
 function gameStart() {
   textAlign(CENTER);
-  textSize(width/15); //this makes text size responsive based on canvas width
+  textSize(width / 15); //this makes text size responsive based on canvas width
   text('State Capitals', width / 2, height / 2);
-  textSize(width/30);
-  text('Press start to begin. This also has sound.', width/2, height/1.5);
+  textSize(width / 30);
+  text('Press start to begin. This also has sound.', width / 2, height / 1.5);
 }
 
 function gameEnd() {
   textAlign(CENTER);
-  textSize(width/15)
-  text('Thanks for playing!', width/2, height/2);
-  textSize(width/30);
-  text(`You scored: ${scoreTotal + 1} / ${activeQuestion + 1}`, width/2, height/1.5)
+  textSize(width / 15)
+  text('Thanks for playing!', width / 2, height / 2);
+  textSize(width / 30);
+  text(`You scored: ${scoreTotal + 1} / ${activeQuestion + 1}`, width / 2, height / 1.5)
 }
 
 function playGame() {
@@ -300,7 +298,7 @@ function playGame() {
   answers[activeQuestion].displayPA(); //display the current possible answers
   //display the score
   push();
-  textSize(width/40); //this makes text size responsive based on canvas width
+  textSize(width / 40); //this makes text size responsive based on canvas width
   text(`Questions Correct: ${scoreTotal} / ${activeQuestion}`, width - 110, 50); //displays the total amoutn correct (score) over total questions
   pop();
 }
@@ -310,7 +308,7 @@ function loadData() {
   console.log(jsondata);
 
   for (let item of Object.keys(jsondata)) { //this forms 50 questions out of each state in the json object and pushes those questions to an array
-    let q = new Question(`What is the capital of ${jsondata[item].name}?`, width/2, height * .3, `${jsondata[item].capital}`, 1)
+    let q = new Question(`What is the capital of ${jsondata[item].name}?`, width / 2, height * .3, `${jsondata[item].capital}`, 1)
     questions.push(q);
   }
 
@@ -319,7 +317,7 @@ function loadData() {
     answers.push(a);
   }
 
-  for(var i = 0; i < answers.length; i++){ //for all 50 answers, initialize the possible answers
+  for (var i = 0; i < answers.length; i++) { //for all 50 answers, initialize the possible answers
     console.log('hello');
     answers[i].initAns(i);
   }
@@ -332,7 +330,7 @@ function loadData() {
 function smiley(color, radianX, radianY) { //this smiley shape is from http://alpha.editor.p5js.org/daniwhkim/sketches/HyJ2wNOp
   push();
   translate(10, 10);
-  scale(width/720); //scales based on width
+  scale(width / 720); //scales based on width
   noStroke();
   // smiley face
   fill(color);
